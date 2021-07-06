@@ -21,6 +21,7 @@ namespace KomodoInsDeveloperTeamMgt
         //Method that runs/starts the application
         public void Run()
         {
+            SeedDevelopers();
             Menu();
         }
 
@@ -277,7 +278,7 @@ namespace KomodoInsDeveloperTeamMgt
 
             var devTeam = _devTeamRepository.GetDevTeamByID(userInputTeamId);
 
-            if (team is null)
+            if (devTeam is null)
             {
                 Console.WriteLine("Team does not exist");
             }
@@ -312,7 +313,7 @@ namespace KomodoInsDeveloperTeamMgt
 
             var devTeam = _devTeamRepository.GetDevTeamByID(userInputTeamId);
 
-            if (team is null)
+            if (devTeam is null)
             {
                 Console.WriteLine("Team does not exist");
             }
@@ -358,7 +359,7 @@ namespace KomodoInsDeveloperTeamMgt
 
                 if (success)
                 {
-                    Console.WriteLine("Sucess!!!");
+                    Console.WriteLine("Success!!!");
                 }
                 else
                 {
@@ -385,7 +386,7 @@ namespace KomodoInsDeveloperTeamMgt
 
             var devTeam = _devTeamRepository.GetDevTeamByID(userInputTeamId);
 
-            if (team is null)
+            if (devTeam is null)
             {
                 Console.WriteLine("Team does not exist");
             }
@@ -411,7 +412,7 @@ namespace KomodoInsDeveloperTeamMgt
 
         private void DisplayTeamData(DevTeam team)
         {
-            Console.WriteLine($"{team.TeamIDNumber}\n" +
+            Console.WriteLine($"{team.TeamID}\n" +
                                 $"{team.TeamName}\n");
 
             Console.WriteLine("--------------Members--------------------");

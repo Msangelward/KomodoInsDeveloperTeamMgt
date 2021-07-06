@@ -29,8 +29,8 @@ namespace DevTeamPOCOS
 
         public DevTeam(string userInputTeamName, List<Developer> devsToBeAddedToTeam)
         {
-            this.userInputTeamName = userInputTeamName;
-            this.devsToBeAddedToTeam = devsToBeAddedToTeam;
+            this.TeamName = userInputTeamName;
+            this.Developers = devsToBeAddedToTeam;
         }
 
         //create lists of Team Members with Team Name, Team ID

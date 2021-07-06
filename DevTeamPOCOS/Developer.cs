@@ -33,9 +33,9 @@ namespace DeveloperPOCOS
 
         public Developer(string v1, string v2, bool v3)
         {
-            this.v1 = v1;
-            this.v2 = v2;
-            this.v3 = v3;
+            this.FirstName = v1;
+            this.LastName = v2;
+            this.PluralSight = v3;
         }
     }
 }
