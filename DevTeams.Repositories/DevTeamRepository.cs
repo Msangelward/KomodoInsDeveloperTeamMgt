@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DevTeams.Repositories
 {
-    class DevTeamRepository
+    public class DevTeamRepository
     {
         //1. Create the fake database
         private readonly List<DevTeam> _devTeamRepository = new List<DevTeam>();

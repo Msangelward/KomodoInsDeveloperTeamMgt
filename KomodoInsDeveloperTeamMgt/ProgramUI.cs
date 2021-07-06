@@ -9,13 +9,14 @@ using System.Threading.Tasks;
 
 namespace KomodoInsDeveloperTeamMgt
 {
-    class ProgramUI
+    public class ProgramUI
     {
         public DeveloperRepository _developerRepo = new DeveloperRepository();
         public string pluralSightAsString;
-        public object newDeveloper;
-        public object _devTeamRepo;
-        private object _devRepo;
+        public string newDeveloper;
+        public DevTeamRepository _devTeamRepository = new DevTeamRepository();
+        private string _devRepo;
+        private string team;
 
         //Method that runs/starts the application
         public void Run()
@@ -262,11 +263,10 @@ namespace KomodoInsDeveloperTeamMgt
             // Otherwise state it could not be deleted
         }
 
-        private void DeletingExistingTeam()
+        private void DeleteExistingTeam()
         {
             Console.Clear();
-
-            List<DevTeam> devTeamsInDatabase = _devTeamRepo.GetDevTeams().ToList();
+            List<DevTeam> devTeamsInDatabase = _devTeamRepository.GetDevTeams().ToList();
             foreach (var team in devTeamsInDatabase)
             {
                 Console.WriteLine($"{team.TeamID} {team.TeamName}");
@@ -275,7 +275,7 @@ namespace KomodoInsDeveloperTeamMgt
             Console.WriteLine("Please input Team ID:");
             var userInputTeamId = int.Parse(Console.ReadLine());
 
-            var devTeam = _devTeamRepo.GetDevTeamByID(userInputTeamId);
+            var devTeam = _devTeamRepository.GetDevTeamByID(userInputTeamId);
 
             if (team is null)
             {
@@ -283,7 +283,7 @@ namespace KomodoInsDeveloperTeamMgt
             }
             else
             {
-                var success = _devTeamRepo.DeleteTeam(userInputTeamId);
+                var success = _devTeamRepository.DeleteTeam(userInputTeamId);
                 if (success)
                 {
                     Console.WriteLine("Success");
@@ -301,7 +301,7 @@ namespace KomodoInsDeveloperTeamMgt
         {
             Console.Clear();
 
-            List<DevTeam> devTeamsInDatabase = _devTeamRepo.GetDevTeams().ToList();
+            List<DevTeam> devTeamsInDatabase = _devTeamRepository.GetDevTeams().ToList();
             foreach (var team in devTeamsInDatabase)
             {
                 Console.WriteLine($"{team.TeamID} {team.TeamName}");
@@ -310,7 +310,7 @@ namespace KomodoInsDeveloperTeamMgt
             Console.WriteLine("Please input Team ID:");
             var userInputTeamId = int.Parse(Console.ReadLine());
 
-            var devTeam = _devTeamRepo.GetDevTeamByID(userInputTeamId);
+            var devTeam = _devTeamRepository.GetDevTeamByID(userInputTeamId);
 
             if (team is null)
             {
@@ -318,7 +318,7 @@ namespace KomodoInsDeveloperTeamMgt
             }
             else
             {
-                List<Developer> DevsInDatabase = _developerRepo.GetDevelopers().ToList();
+                List<Developer> DevsInDatabase = _developerRepo.GetDeveloperList();
 
                 List<Developer> DevsToBeAddedToTeam = new List<Developer>();
                 bool teamPosFilled = false;
@@ -339,7 +339,7 @@ namespace KomodoInsDeveloperTeamMgt
                         }
 
                         Console.WriteLine("Please Select a Developer by ID:");
-                        int userInputDevId = int.Parse(Console.ReadLine();
+                        int userInputDevId = int.Parse(Console.ReadLine());
 
                         var developer = _developerRepo.GetDeveloperByID(userInputDevId);
 
@@ -354,7 +354,7 @@ namespace KomodoInsDeveloperTeamMgt
                 }
 
                 DevTeam newDevTeamData = new DevTeam(userInputTeamName, DevsToBeAddedToTeam);
-                var success = _devTeamRepo.UpdateTeam(userInputTeamId, newDevTeamData);
+                var success = _devTeamRepository.UpdateTeam(userInputTeamId, newDevTeamData);
 
                 if (success)
                 {
@@ -374,7 +374,7 @@ namespace KomodoInsDeveloperTeamMgt
         {
             Console.Clear();
 
-            List<DevTeam> devTeamsInDatabase = _devTeamRepo.GetDevTeams().ToList();
+            List<DevTeam> devTeamsInDatabase = _devTeamRepository.GetDevTeams().ToList();
             foreach (var team in devTeamsInDatabase)
             {
                 Console.WriteLine($"{team.TeamID} {team.TeamName}");
@@ -383,7 +383,7 @@ namespace KomodoInsDeveloperTeamMgt
             Console.WriteLine("Please input Team ID:");
             var userInputTeamId = int.Parse(Console.ReadLine());
 
-            var devTeam = _devTeamRepo.GetDevTeamByID(userInputTeamId);
+            var devTeam = _devTeamRepository.GetDevTeamByID(userInputTeamId);
 
             if (team is null)
             {
@@ -400,7 +400,7 @@ namespace KomodoInsDeveloperTeamMgt
         private void ViewAllTeams()
         {
             Console.Clear();
-            List<DevTeam> devTeamsInDatabase = _devTeamRepo.GetDevTeams().ToList();
+            List<DevTeam> devTeamsInDatabase = _devTeamRepository.GetDevTeams().ToList();
             
             foreach (var team in devTeamsInDatabase)
             {
@@ -430,7 +430,7 @@ namespace KomodoInsDeveloperTeamMgt
         {
             Console.Clear();
 
-            List<Developer> DevsInDatabase = _developerRepo.GetDevelopers().ToList();
+            List<Developer> DevsInDatabase = _developerRepo.GetDeveloperList();
 
             List<Developer> DevsToBeAddedToTeam = new List<Developer>();
             bool teamPosFilled = false;
@@ -451,7 +451,7 @@ namespace KomodoInsDeveloperTeamMgt
                     }
 
                     Console.WriteLine("Please Select a Developer by ID:");
-                    int userInputDevId = int.Parse(Console.ReadLine();
+                    int userInputDevId = int.Parse(Console.ReadLine());
 
                     var developer = _developerRepo.GetDeveloperByID(userInputDevId);
 
@@ -467,7 +467,7 @@ namespace KomodoInsDeveloperTeamMgt
 
             DevTeam devTeam = new DevTeam(userInputTeamName, DevsToBeAddedToTeam);
 
-            bool success = _devTeamRepo.AddTeam(devTeam);
+            bool success = _devTeamRepository.AddTeam(devTeam);
 
             if (success)
             {
@@ -490,16 +490,16 @@ namespace KomodoInsDeveloperTeamMgt
             Developer developerC = new Developer("Wayne", "Robbinson", false);
             Developer developerD = new Developer("Kayla", "Jones", true);
 
-            _devRepo.AddDeveloperToRepo(developerA);
-            _devRepo.AddDeveloperToRepo(developerB);
-            _devRepo.AddDeveloperToRepo(developerC);
-            _devRepo.AddDeveloperToRepo(developerD);
+            _developerRepo.AddDeveloperToList(developerA);
+            _developerRepo.AddDeveloperToList(developerB);
+            _developerRepo.AddDeveloperToList(developerC);
+            _developerRepo.AddDeveloperToList(developerD);
 
             DevTeam teamA = new DevTeam("Tritan", new List<Developer>() { developerA, developerB });
             DevTeam teamB = new DevTeam("Long Rangers", new List<Developer>() { developerA, developerB, developerD });
 
-            _devTeamRepo.AddTeam(teamA);
-            _devTeamRepo.AddTeam(teamB);
+            _devTeamRepository.AddTeam(teamA);
+            _devTeamRepository.AddTeam(teamB);
         }
     }    
 }
