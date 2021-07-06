@@ -15,18 +15,16 @@ namespace DeveloperPOCOS
         public int DeveloperIDNumber { get; set; }
 
         public bool PluralSight { get; set; }
-        
-        public string TeamName { get; set; }
 
         public Developer() { }
 
-        public Developer(string firstName, string lastName, int developerIDNumber, bool pluralSight, string teamName)
+        public Developer(string firstName, string lastName, int developerIDNumber, bool pluralSight)
         {
             FirstName = firstName;
             LastName = lastName;
             DeveloperIDNumber = developerIDNumber;
             PluralSight = pluralSight;
-            TeamName = teamName;
+            
         }
     }
 }

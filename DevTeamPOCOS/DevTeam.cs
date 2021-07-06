@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DeveloperPOCOS;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,14 +9,14 @@ namespace DevTeamPOCOS
 {
     public class DevTeam
     {
-        public List<DeveloperPOCOS.Developer> Developers { get; set; }
+        public List<Developer> Developers { get; set; }
         public string TeamName { get; set; }
 
         public int TeamIDNumber { get; set; }
 
         public DevTeam() { }
 
-        public DevTeam(List<DeveloperPOCOS.Developer> developers, string teamName, int teamIDNumber)
+        public DevTeam(List<Developer> developers, string teamName, int teamIDNumber)
         {
             Developers = developers;
             TeamName = teamName;

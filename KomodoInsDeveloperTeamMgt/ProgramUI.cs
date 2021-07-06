@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DevTeams.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,9 @@ namespace KomodoInsDeveloperTeamMgt
 {
     class ProgramUI
     {
-        private DevTeamPOCOS.DeveloperRepo _developerRepo = new DevTeamPOCOS.DeveloperRepo();
+        public DeveloperRepository _developerRepo = new DeveloperRepository();
+        public string pluralSightAsString;
+        public object newDeveloper;
 
         //Method that runs/starts the application
         public void Run()
@@ -17,7 +20,7 @@ namespace KomodoInsDeveloperTeamMgt
         }
 
         //Menu
-        private void Menu()
+        public void Menu()
         {
             bool keepRunning = true;
             while (keepRunning)
@@ -75,7 +78,7 @@ namespace KomodoInsDeveloperTeamMgt
         }
         
         //Create New Developer
-        private void CreateNewDeveloper()
+        public void CreateNewDeveloper()
         {
             Console.Clear();
             DeveloperPOCOS.Developer newDeveloper = new DeveloperPOCOS.Developer();
@@ -85,10 +88,6 @@ namespace KomodoInsDeveloperTeamMgt
 
             Console.WriteLine("Enter Last Name:");
             newDeveloper.LastName = Console.ReadLine();
-
-            Console.WriteLine("Enter Developer's ID Nmber:");
-            string devIDAsString = Console.ReadLine();
-            newDeveloper.DeveloperIDNumber = int.Parse(devIDAsString);
 
             Console.WriteLine("Do you have access to Pluralsight? y/n");
             string pluralSightAsString = Console.ReadLine().ToLower();
@@ -102,29 +101,33 @@ namespace KomodoInsDeveloperTeamMgt
                 newDeveloper.PluralSight = false;
             }
 
-            Console.WriteLine("Enter Team Name:");
-            newDeveloper.TeamName = Console.ReadLine();
-
             _developerRepo.AddDeveloperToList(newDeveloper);
 
         }
 
         //View Current List of Developers
-        private void DisplayListOfDevelopers()
+        public void DisplayListOfDevelopers()
         {
             List<DeveloperPOCOS.Developer> listOfDevelopers = _developerRepo.GetDeveloperList();
 
             foreach (DeveloperPOCOS.Developer developer in listOfDevelopers)
             {
-                Console.WriteLine($"Name: {developer.FirstName} + {developer.LastName}\n" +
+                Console.WriteLine($"Name: {developer.FirstName} {developer.LastName}\n" +
                     $"Developer ID Number {developer.DeveloperIDNumber}\n" +
-                    $"PluralSight: {developer.PluralSight}\n" +
-                    $"TeamName: {developer.TeamName}");
+                    $"PluralSight: {developer.PluralSight}\n");
+                if (pluralSightAsString == "y")
+                {
+                    developer.PluralSight = true;
+                }
+                else
+                {
+                    developer.PluralSight = false;
+                }
             }
         }
 
         //View Existing Developers by Developer ID Number
-        private void DisplayDeveloperByDeveloperIDNumber()
+        public void DisplayDeveloperByDeveloperIDNumber()
         {
             Console.Clear();
             //Prompt User for Developer ID
@@ -137,10 +140,9 @@ namespace KomodoInsDeveloperTeamMgt
             //Display Said Developer if it isn't null
             if(developerIDNumber != null)
             {
-                Console.WriteLine($"Name: {developerIDNumber.FirstName} + {developerIDNumber.LastName}\n" +
+                Console.WriteLine($"Name: {developerIDNumber.FirstName} {developerIDNumber.LastName}\n" +
                     $"Developer ID Number {developerIDNumber.DeveloperIDNumber}\n" +
-                    $"PluralSight: {developerIDNumber.PluralSight}\n" +
-                    $"TeamName: {developerIDNumber.TeamName}");
+                    $"PluralSight: {developerIDNumber.PluralSight}\n");
             }
             else
             {
@@ -149,7 +151,7 @@ namespace KomodoInsDeveloperTeamMgt
         }
 
         //Update Existing Developer
-        private void UpdateExistingDeveloper()
+        public void UpdateExistingDeveloper()
         {
             // Display all content
             DisplayDeveloperByDeveloperIDNumber();
@@ -185,9 +187,6 @@ namespace KomodoInsDeveloperTeamMgt
                 newDeveloper.PluralSight = false;
             }
 
-            Console.WriteLine("Enter Team Name:");
-            newDeveloper.TeamName = Console.ReadLine();
-
             //Verify the update worked
             bool wasUpdated = _developerRepo.UpdateExistingDeveloper(int.Parse(oldDeveloper), newDeveloper);
 
@@ -202,7 +201,7 @@ namespace KomodoInsDeveloperTeamMgt
         }
 
         //Remove Existing Developer
-        private void DeleteExistingDeveloper()
+        public void DeleteExistingDeveloper()
         {
             Console.Clear();
 
