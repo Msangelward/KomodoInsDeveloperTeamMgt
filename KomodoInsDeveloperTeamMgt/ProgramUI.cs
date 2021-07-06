@@ -1,4 +1,6 @@
-﻿using DevTeams.Repositories;
+﻿using DeveloperPOCOS;
+using DevTeamPOCOS;
+using DevTeams.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +14,8 @@ namespace KomodoInsDeveloperTeamMgt
         public DeveloperRepository _developerRepo = new DeveloperRepository();
         public string pluralSightAsString;
         public object newDeveloper;
+        public object _devTeamRepo;
+        private object _devRepo;
 
         //Method that runs/starts the application
         public void Run()
@@ -28,12 +32,19 @@ namespace KomodoInsDeveloperTeamMgt
 
                 //Display our options to the user
                 Console.WriteLine("Select a menu option:\n" +
+                    "-------------Developer Menu----------------\n\n" +
                     "1. Create New Developer\n" +
                     "2. View List of Developers\n" +
                     "3. View Developer by Developer ID Number\n" +
                     "4. Update Existing Developer information\n" +
                     "5. Remove Existing Developer\n" +
-                    "6. Exit");
+                    "-------------Dev Team Menu-----------------\n\n" +
+                    "6. Create Team\n" +
+                    "7. View All Teams\n" +
+                    "8. View Single Team\n" +
+                    "9. Update Existing Team\n" +
+                    "10. Delete Exiting Team\n" +
+                    "11. Exit");
 
                 //Get the user's input
                 string input = Console.ReadLine();
@@ -62,6 +73,26 @@ namespace KomodoInsDeveloperTeamMgt
                         DeleteExistingDeveloper();
                         break;
                     case "6":
+                        //Create new Team
+                        CreateTeam();
+                        break;
+                    case "7":
+                        //View All Teams
+                        ViewAllTeams();
+                        break;
+                    case "8":
+                        //View Single Team
+                        ViewSingleTeam();
+                        break;
+                    case "9":
+                        //Update Existing Team
+                        UpdateExistingTeam();
+                        break;
+                    case "10":
+                        //Remove Existing Team
+                        DeleteExistingTeam();
+                        break;
+                    case "11":
                         //Exit
                         Console.WriteLine("Goodbye.");
                         keepRunning = false;
@@ -230,10 +261,245 @@ namespace KomodoInsDeveloperTeamMgt
 
             // Otherwise state it could not be deleted
         }
-    }
 
-        //they need to be able to add/remove by developerID number, see a list of existing developers to choose from, and add to existing lists. 
-        //mgr creates team, then add developers individually fromt he developer directory
+        private void DeletingExistingTeam()
+        {
+            Console.Clear();
 
-       
+            List<DevTeam> devTeamsInDatabase = _devTeamRepo.GetDevTeams().ToList();
+            foreach (var team in devTeamsInDatabase)
+            {
+                Console.WriteLine($"{team.TeamID} {team.TeamName}");
+            }
+
+            Console.WriteLine("Please input Team ID:");
+            var userInputTeamId = int.Parse(Console.ReadLine());
+
+            var devTeam = _devTeamRepo.GetDevTeamByID(userInputTeamId);
+
+            if (team is null)
+            {
+                Console.WriteLine("Team does not exist");
+            }
+            else
+            {
+                var success = _devTeamRepo.DeleteTeam(userInputTeamId);
+                if (success)
+                {
+                    Console.WriteLine("Success");
+                }
+                else
+                {
+                    Console.WriteLine("Failure");
+                }
+            }
+
+            Console.ReadKey();
+        }
+
+        private void UpdateExistingTeam()
+        {
+            Console.Clear();
+
+            List<DevTeam> devTeamsInDatabase = _devTeamRepo.GetDevTeams().ToList();
+            foreach (var team in devTeamsInDatabase)
+            {
+                Console.WriteLine($"{team.TeamID} {team.TeamName}");
+            }
+
+            Console.WriteLine("Please input Team ID:");
+            var userInputTeamId = int.Parse(Console.ReadLine());
+
+            var devTeam = _devTeamRepo.GetDevTeamByID(userInputTeamId);
+
+            if (team is null)
+            {
+                Console.WriteLine("Team does not exist");
+            }
+            else
+            {
+                List<Developer> DevsInDatabase = _developerRepo.GetDevelopers().ToList();
+
+                List<Developer> DevsToBeAddedToTeam = new List<Developer>();
+                bool teamPosFilled = false;
+
+                Console.WriteLine("Please input a Team Name:");
+                var userInputTeamName = Console.ReadLine();
+
+                while (!teamPosFilled)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Do you want to add any members? y/n");
+                    var userInputAnyTeamMembers = Console.ReadLine();
+                    if (userInputAnyTeamMembers == "Y".ToLower())
+                    {
+                        foreach (var dev in DevsInDatabase)
+                        {
+                            Console.WriteLine($"{dev.DeveloperIDNumber} {dev.FirstName} {dev.LastName}");
+                        }
+
+                        Console.WriteLine("Please Select a Developer by ID:");
+                        int userInputDevId = int.Parse(Console.ReadLine();
+
+                        var developer = _developerRepo.GetDeveloperByID(userInputDevId);
+
+                        DevsToBeAddedToTeam.Add(developer);
+
+                        DevsInDatabase.Remove(developer);
+                    }
+                    else
+                    {
+                        teamPosFilled = true;
+                    }
+                }
+
+                DevTeam newDevTeamData = new DevTeam(userInputTeamName, DevsToBeAddedToTeam);
+                var success = _devTeamRepo.UpdateTeam(userInputTeamId, newDevTeamData);
+
+                if (success)
+                {
+                    Console.WriteLine("Sucess!!!");
+                }
+                else
+                {
+                    Console.WriteLine("Failure!!!");
+                }
+            }
+
+            Console.ReadKey();
+
+        }
+
+        private void ViewSingleTeam()
+        {
+            Console.Clear();
+
+            List<DevTeam> devTeamsInDatabase = _devTeamRepo.GetDevTeams().ToList();
+            foreach (var team in devTeamsInDatabase)
+            {
+                Console.WriteLine($"{team.TeamID} {team.TeamName}");
+            }
+
+            Console.WriteLine("Please input Team ID:");
+            var userInputTeamId = int.Parse(Console.ReadLine());
+
+            var devTeam = _devTeamRepo.GetDevTeamByID(userInputTeamId);
+
+            if (team is null)
+            {
+                Console.WriteLine("Team does not exist");
+            }
+            else
+            {
+                DisplayTeamData(devTeam);
+            }
+
+            Console.ReadKey();
+        }
+
+        private void ViewAllTeams()
+        {
+            Console.Clear();
+            List<DevTeam> devTeamsInDatabase = _devTeamRepo.GetDevTeams().ToList();
+            
+            foreach (var team in devTeamsInDatabase)
+            {
+                DisplayTeamData(team);
+            }
+            Console.ReadKey();
+        }
+
+        private void DisplayTeamData(DevTeam team)
+        {
+            Console.WriteLine($"{team.TeamIDNumber}\n" +
+                                $"{team.TeamName}\n");
+
+            Console.WriteLine("--------------Members--------------------");
+
+            foreach (var dev in team.Developers)
+            {
+                Console.WriteLine($"{dev.DeveloperIDNumber}\n"+
+                                    $"{dev.FirstName} {dev.LastName}\n"+
+                                    $"{dev.PluralSight}\n");
+            }
+
+            Console.WriteLine("--------------------------------------------");
+        }
+
+        private void CreateTeam()
+        {
+            Console.Clear();
+
+            List<Developer> DevsInDatabase = _developerRepo.GetDevelopers().ToList();
+
+            List<Developer> DevsToBeAddedToTeam = new List<Developer>();
+            bool teamPosFilled = false;
+
+            Console.WriteLine("Please input a Team Name:");
+            var userInputTeamName = Console.ReadLine();
+
+            while (!teamPosFilled)
+            {
+                Console.Clear();
+                Console.WriteLine("Do you want to add any members? y/n");
+                var userInputAnyTeamMembers = Console.ReadLine();
+                if (userInputAnyTeamMembers == "Y".ToLower())
+                {
+                    foreach (var dev in DevsInDatabase)
+                    {
+                        Console.WriteLine($"{dev.DeveloperIDNumber} {dev.FirstName} {dev.LastName}");
+                    }
+
+                    Console.WriteLine("Please Select a Developer by ID:");
+                    int userInputDevId = int.Parse(Console.ReadLine();
+
+                    var developer = _developerRepo.GetDeveloperByID(userInputDevId);
+
+                    DevsToBeAddedToTeam.Add(developer);
+
+                    DevsInDatabase.Remove(developer);
+                }
+                else
+                {
+                    teamPosFilled = true;
+                }
+            }
+
+            DevTeam devTeam = new DevTeam(userInputTeamName, DevsToBeAddedToTeam);
+
+            bool success = _devTeamRepo.AddTeam(devTeam);
+
+            if (success)
+            {
+                Console.WriteLine($"{devTeam.TeamName} was Created!");
+            }
+            else
+            {
+                Console.WriteLine("Failure!");
+            }
+
+            Console.ReadKey();
+        }
+
+        //Seed Developer Data
+        
+        private void SeedDevelopers()
+        {
+            Developer developerA = new Developer("John", "Weckerly", true);
+            Developer developerB = new Developer("Nancy", "Lady", false);
+            Developer developerC = new Developer("Wayne", "Robbinson", false);
+            Developer developerD = new Developer("Kayla", "Jones", true);
+
+            _devRepo.AddDeveloperToRepo(developerA);
+            _devRepo.AddDeveloperToRepo(developerB);
+            _devRepo.AddDeveloperToRepo(developerC);
+            _devRepo.AddDeveloperToRepo(developerD);
+
+            DevTeam teamA = new DevTeam("Tritan", new List<Developer>() { developerA, developerB });
+            DevTeam teamB = new DevTeam("Long Rangers", new List<Developer>() { developerA, developerB, developerD });
+
+            _devTeamRepo.AddTeam(teamA);
+            _devTeamRepo.AddTeam(teamB);
+        }
+    }    
 }

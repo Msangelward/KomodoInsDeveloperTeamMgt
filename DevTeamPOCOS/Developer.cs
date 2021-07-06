@@ -8,6 +8,10 @@ namespace DeveloperPOCOS
 { 
     public class Developer
     {
+        private string v1;
+        private string v2;
+        private bool v3;
+
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
@@ -25,6 +29,13 @@ namespace DeveloperPOCOS
             DeveloperIDNumber = developerIDNumber;
             PluralSight = pluralSight;
             
+        }
+
+        public Developer(string v1, string v2, bool v3)
+        {
+            this.v1 = v1;
+            this.v2 = v2;
+            this.v3 = v3;
         }
     }
 }

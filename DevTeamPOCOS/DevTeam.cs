@@ -9,10 +9,14 @@ namespace DevTeamPOCOS
 {
     public class DevTeam
     {
+        private string userInputTeamName;
+        private List<Developer> devsToBeAddedToTeam;
+
         public List<Developer> Developers { get; set; }
         public string TeamName { get; set; }
 
         public int TeamIDNumber { get; set; }
+        public int TeamID { get; set; }
 
         public DevTeam() { }
 
@@ -21,6 +25,12 @@ namespace DevTeamPOCOS
             Developers = developers;
             TeamName = teamName;
             TeamIDNumber = teamIDNumber;
+        }
+
+        public DevTeam(string userInputTeamName, List<Developer> devsToBeAddedToTeam)
+        {
+            this.userInputTeamName = userInputTeamName;
+            this.devsToBeAddedToTeam = devsToBeAddedToTeam;
         }
 
         //create lists of Team Members with Team Name, Team ID

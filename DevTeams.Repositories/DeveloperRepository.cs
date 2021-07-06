@@ -125,5 +125,9 @@ namespace DevTeams.Repositories
             throw new NotImplementedException();
         }
       */
+        public object GetDevelopers()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
